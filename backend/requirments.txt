@@ -1,0 +1,9 @@
+fastapi
+uvicorn
+openai
+python-dotenv
+pandas
+matplotlib
+yfinance
+TA-Lib
+
