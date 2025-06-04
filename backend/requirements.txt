@@ -5,4 +5,4 @@ python-dotenv==1.0.1
 pandas==2.2.2
 matplotlib==3.8.4
 yfinance==0.2.50
-TA-Lib==0.4.0
+TA-Lib
