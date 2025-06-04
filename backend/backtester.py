@@ -1,20 +1,20 @@
 import yfinance as yf
 import pandas as pd
 import matplotlib.pyplot as plt
-import talib
+from finta import TA
 import base64
 from io import BytesIO
 
 def apply_indicators(df):
     df['Price'] = df['Close'].values.flatten()
-    df['RSI'] = talib.RSI(df['Close'].values.flatten(), timeperiod=14)
+    df['RSI'] = TA.RSI(df['Close'].values.flatten(), timeperiod=14)
     df['MA50'] = df['Close'].rolling(window=50).mean()
     df['MA100'] = df['Close'].rolling(window=100).mean()
     df['MA200'] = df['Close'].rolling(window=200).mean()
-    df['ATR'] = talib.ATR(df['High'].values.flatten(), df['Low'].values.flatten(), df['Close'].values.flatten(), timeperiod=14)
-    df['MACD'], _, _ = talib.MACD(df['Close'].values.flatten())
+    df['ATR'] = TA.ATR(df['High'].values.flatten(), df['Low'].values.flatten(), df['Close'].values.flatten(), timeperiod=14)
+    df['MACD'], _, _ = TA.MACD(df['Close'].values.flatten())
     df ['typical_price'] = (df['High'] + df['Low'] + df['Close']) / 3
-    upper, middle, lower = talib.BBANDS(df['typical_price'], timeperiod=20, nbdevup=2, nbdevdn=2, matype=0)
+    upper, middle, lower = TA.BBANDS(df['typical_price'], timeperiod=20, nbdevup=2, nbdevdn=2, matype=0)
     df['BB_upper'] = upper
     df['BB_middle'] = middle
     df['BB_lower'] = lower
