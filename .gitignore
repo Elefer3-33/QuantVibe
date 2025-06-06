@@ -1,0 +1,21 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.env
+
+# FastAPI
+instance/
+*.db
+
+# Node/React (if frontend exists)
+node_modules/
+dist/
+build/
+
+# macOS
+.DS_Store
+
+# OS junk
+*.swp
+
