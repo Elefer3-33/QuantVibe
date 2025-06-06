@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
 
-# Install TA-Lib C library
 apt-get update && apt-get install -y build-essential wget curl
 
 curl -LO http://prdownloads.sourceforge.net/ta-lib/ta-lib-0.4.0-src.tar.gz
