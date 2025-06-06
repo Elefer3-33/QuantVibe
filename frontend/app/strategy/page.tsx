@@ -55,7 +55,6 @@ export default function StrategyPage() {
     setParticles(newParticles);
   }, []);
 
-  const API_BASE_URL = "https://quantvibe.onrender.com";
 
   // Replace the entire handleSubmit function with this real API implementation
   const handleSubmit = async () => {
@@ -73,7 +72,7 @@ export default function StrategyPage() {
       console.log("Sending strategy to backend:", strategy);
 
       // Make the actual API call to your Python backend
-      const response = await fetch("https://quantvibe.onrender.com/backtest", {
+      const response = await fetch(`${API_BASE_URL}/backtest`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

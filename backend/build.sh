@@ -12,5 +12,5 @@ make install
 cd ..
 rm -rf ta-lib ta-lib-0.4.0-src.tar.gz
 
-chmod +x build.sh
+chmod +x backend/build.sh
 
