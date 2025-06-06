@@ -1,8 +1,9 @@
-fastapi==0.115.1
-uvicorn==0.30.0
-openai==1.76.0
-python-dotenv==1.0.1
-pandas==2.2.2
-matplotlib==3.8.4
-yfinance==0.2.50
-finta
+fastapi
+uvicorn
+openai
+python-dotenv
+pandas
+matplotlib
+yfinance
+ta-lib @ https://github.com/mrjbq7/ta-lib/archive/refs/tags/0.4.0.tar.gz
+
