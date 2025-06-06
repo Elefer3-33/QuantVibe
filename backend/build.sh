@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
-set -euo pipefail  # Exit on error, unset var error, and fail on pipe errors
-set -x             # Print each command before execution (helps debugging)
+set -e  # Exit on error
 
 # Download TA-lib source code
 curl -LO http://prdownloads.sourceforge.net/ta-lib/ta-lib-0.4.0-src.tar.gz
@@ -17,4 +16,3 @@ make install
 # Cleanup
 cd ..
 rm -rf ta-lib ta-lib-0.4.0-src.tar.gz
-
