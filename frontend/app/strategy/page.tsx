@@ -32,6 +32,7 @@ interface BacktestResults {
   chart?: any;
 }
 
+
 export default function StrategyPage() {
   const router = useRouter();
   const [strategy, setStrategy] = useState("");
@@ -55,7 +56,8 @@ export default function StrategyPage() {
     setParticles(newParticles);
   }, []);
 
-  // Replace the entire handleSubmit function with this real API implementation
+  const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
+  
   const handleSubmit = async () => {
     if (!strategy.trim()) {
       setError("Please enter a strategy to test");
@@ -71,7 +73,7 @@ export default function StrategyPage() {
       console.log("Sending strategy to backend:", strategy);
 
       // Make the actual API call to your Python backend
-      const response = await fetch(`http://127.0.0.1:8000/backtest`, {
+      const response = await fetch(`${backendUrl}/backtest`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
