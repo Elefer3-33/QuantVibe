@@ -1,25 +1,50 @@
 import yfinance as yf
 import pandas as pd
 import matplotlib.pyplot as plt
-import talib
+import pandas_ta as ta
 import base64
 from io import BytesIO
 
 def apply_indicators(df):
-    df['Price'] = df['Close'].values.flatten()
-    df['RSI'] = talib.RSI(df['Close'].values.flatten(), timeperiod=14)
+    # Flatten MultiIndex columns if needed (optional)
+    if isinstance(df.columns, pd.MultiIndex):
+        df.columns = ['_'.join(col).strip() if isinstance(col, tuple) else col for col in df.columns]
+
+    for col in ['Close', 'High', 'Low']:
+        if col not in df.columns:
+            raise ValueError(f"Missing required column: {col}")
+
+    df['RSI'] = ta.rsi(df['Close'], length=14)
+
     df['MA50'] = df['Close'].rolling(window=50).mean()
     df['MA100'] = df['Close'].rolling(window=100).mean()
     df['MA200'] = df['Close'].rolling(window=200).mean()
-    df['ATR'] = talib.ATR(df['High'].values.flatten(), df['Low'].values.flatten(), df['Close'].values.flatten(), timeperiod=14)
-    df['MACD'], _, _ = talib.MACD(df['Close'].values.flatten())
-    df ['typical_price'] = (df['High'] + df['Low'] + df['Close']) / 3
-    upper, middle, lower = talib.BBANDS(df['typical_price'], timeperiod=20, nbdevup=2, nbdevdn=2, matype=0)
-    df['BB_upper'] = upper
-    df['BB_middle'] = middle
-    df['BB_lower'] = lower
+
+    df['ATR'] = ta.atr(df['High'], df['Low'], df['Close'], length=14)
+
+    macd_df = ta.macd(df['Close'])
+    if macd_df is not None and 'MACD_12_26_9' in macd_df.columns:
+        df['MACD'] = macd_df['MACD_12_26_9']
+    else:
+        df['MACD'] = pd.NA  # or np.nan
+
+    df['typical_price'] = (df['High'] + df['Low'] + df['Close']) / 3
+    bb = ta.bbands(df['typical_price'], length=20, std=2.0)
+    if bb is not None and all(col in bb.columns for col in ['BBL_20_2.0', 'BBM_20_2.0', 'BBU_20_2.0']):
+        bb = bb.rename(columns={
+            'BBL_20_2.0': 'BB_lower',
+            'BBM_20_2.0': 'BB_middle',
+            'BBU_20_2.0': 'BB_upper'
+        })
+        df = pd.concat([df, bb[['BB_lower', 'BB_middle', 'BB_upper']]], axis=1)
+    else:
+        df['BB_lower'] = pd.NA
+        df['BB_middle'] = pd.NA
+        df['BB_upper'] = pd.NA
 
     return df
+
+
 
 def check_condition(df, i, condition):
     indicator = condition['indicator']
@@ -64,8 +89,11 @@ def backtest_strategy(strategy):
     action = strategy["action"]
     conditions = strategy["conditions"]
 
-    df_full = yf.download(ticker, end="2024-12-31", auto_adjust=False)  
-    df_full = apply_indicators(df_full)  
+    df_full = yf.download(ticker, end="2024-12-31", auto_adjust=False)
+    if isinstance(df_full.columns, pd.MultiIndex):
+        df_full.columns = df_full.columns.get_level_values(0) 
+    print("Columns after flatten:", df_full.columns)
+    df_full = apply_indicators(df_full)
     df = df_full.loc["2019-01-01":"2024-12-31"].copy()  
 
     df['Signal'] = False

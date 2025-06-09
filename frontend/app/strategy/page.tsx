@@ -55,7 +55,6 @@ export default function StrategyPage() {
     setParticles(newParticles);
   }, []);
 
-
   // Replace the entire handleSubmit function with this real API implementation
   const handleSubmit = async () => {
     if (!strategy.trim()) {
@@ -72,7 +71,7 @@ export default function StrategyPage() {
       console.log("Sending strategy to backend:", strategy);
 
       // Make the actual API call to your Python backend
-      const response = await fetch(`${API_BASE_URL}/backtest`, {
+      const response = await fetch(`http://127.0.0.1:8000/backtest`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
